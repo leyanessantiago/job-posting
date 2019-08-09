@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "leyanessantiago.jobposting"
+    },
+    "jhipsterVersion": "6.2.0",
+    "applicationType": "monolith",
+    "baseName": "jobposting",
+    "packageName": "leyanessantiago.jobposting",
+    "packageFolder": "leyanessantiago/jobposting",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "MzlkN2NiMTM5ZGM2ZGMxZGVjMjM1MTkyNmVhZWU3NDk5OGVmZTZhMzc5ZTg3OWEyN2FiOWQ5NGUxYWNhMGI5Y2UyN2MxZGM2YzcwNTNjNTcxZTc2YzU5NWFlOTIzZGQ4YmM1MzE3ZjRkNzI1ZTYwZTRjOWNiYTc3NGM1YzBjODA=",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "react",
+    "clientTheme": "flatly",
+    "clientThemeVariant": "primary",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}
