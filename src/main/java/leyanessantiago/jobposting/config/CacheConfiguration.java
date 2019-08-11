@@ -43,6 +43,11 @@ public class CacheConfiguration {
             createCache(cm, leyanessantiago.jobposting.domain.User.class.getName());
             createCache(cm, leyanessantiago.jobposting.domain.Authority.class.getName());
             createCache(cm, leyanessantiago.jobposting.domain.User.class.getName() + ".authorities");
+            createCache(cm, leyanessantiago.jobposting.domain.Profession.class.getName());
+            createCache(cm, leyanessantiago.jobposting.domain.Advertisement.class.getName());
+            createCache(cm, leyanessantiago.jobposting.domain.Candidate.class.getName());
+            createCache(cm, leyanessantiago.jobposting.domain.Candidate.class.getName() + ".advertisements");
+            createCache(cm, leyanessantiago.jobposting.domain.Advertisement.class.getName() + ".candidates");
             // jhipster-needle-ehcache-add-entry
         };
     }

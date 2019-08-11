@@ -83,6 +83,10 @@ export class UserManagement extends React.Component<IUserManagementProps, IPagin
                 Email
                 <FontAwesomeIcon icon="sort" />
               </th>
+              <th className="hand" onClick={this.sort('companyName')}>
+                Company
+                <FontAwesomeIcon icon="building" />
+              </th>
               <th />
               <th>Profiles</th>
               <th className="hand" onClick={this.sort('createdDate')}>
@@ -110,6 +114,7 @@ export class UserManagement extends React.Component<IUserManagementProps, IPagin
                 </td>
                 <td>{user.login}</td>
                 <td>{user.email}</td>
+                <td>{user.companyName}</td>
                 <td>
                   {user.activated ? (
                     <Button color="success" onClick={this.toggleActive(user)}>

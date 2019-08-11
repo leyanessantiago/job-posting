@@ -90,7 +90,7 @@ export const RegisterPage = (props: IRegisterProps) => {
             <span>
               , you can try the default accounts:
               <br />- Administrator (login="admin" and password="admin")
-              <br />- User (login="user" and password="user").
+              <br />- User (login="employer" and password="employer").
             </span>
           </Alert>
         </Col>
