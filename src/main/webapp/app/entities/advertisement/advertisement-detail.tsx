@@ -29,6 +29,10 @@ export class AdvertisementDetail extends React.Component<IAdvertisementDetailPro
           </h2>
           <dl className="jh-entity-details">
             <dt>
+              <span id="title">Title</span>
+            </dt>
+            <dd>{advertisementEntity.title}</dd>
+            <dt>
               <span id="description">Description</span>
             </dt>
             <dd>{advertisementEntity.description}</dd>
