@@ -1,10 +1,60 @@
 /* ==========================================================================
 Main page styles
 ========================================================================== */
-.hipster {
-  display: inline-block;
+.ads-card-wrapper {
+  width: 31%;
+  text-decoration: none;
+  margin: 0 15px 16px 15px !important;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+.ads-card {
+  height: 200px;
   width: 100%;
-  height: 497px;
-  background: url('../../../content/images/jhipster_family_member_1.svg') no-repeat center top;
-  background-size: contain;
+}
+
+.ads-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #0e141e;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.ads-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #576871;
+  font-weight: 700;
+}
+
+.ads-description {
+  height: 70px;
+  overflow: hidden;
+  color: #576871;
+  font-weight: 400;
+}
+
+.card-body {
+  padding: 0;
+}
+
+@media (min-width: 576px) {
+  .card-deck .card {
+    flex: none;
+  }
+}
+
+@media (max-width: 575px) {
+  .card {
+    width: 100%;
+    margin-right: 0;
+  }
 }

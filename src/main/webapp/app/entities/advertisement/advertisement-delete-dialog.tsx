@@ -2,12 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
-import { ICrudGetAction, ICrudDeleteAction } from 'react-jhipster';
+import { ICrudGetAction, ICrudDeleteAction, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IAdvertisement } from 'app/shared/model/advertisement.model';
 import { IRootState } from 'app/shared/reducers';
-import { getEntity, deleteEntity } from './advertisement.reducer';
+import { getEntity, deleteEntity, getEntities } from './advertisement.reducer';
+import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 
 export interface IAdvertisementDeleteDialogProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
@@ -23,6 +24,8 @@ export class AdvertisementDeleteDialog extends React.Component<IAdvertisementDel
 
   handleClose = event => {
     event.stopPropagation();
+    const { activePage, itemsPerPage, sort, order } = getSortState(this.props.location, ITEMS_PER_PAGE);
+    this.props.getEntities(activePage - 1, itemsPerPage, `${sort},${order}`);
     this.props.history.goBack();
   };
 
@@ -51,7 +54,7 @@ const mapStateToProps = ({ advertisement }: IRootState) => ({
   advertisementEntity: advertisement.entity
 });
 
-const mapDispatchToProps = { getEntity, deleteEntity };
+const mapDispatchToProps = { getEntity, deleteEntity, getEntities };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;

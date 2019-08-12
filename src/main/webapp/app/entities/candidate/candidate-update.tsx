@@ -45,7 +45,7 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
       this.props.getEntity(this.props.match.params.id);
     }
 
-    this.props.getAdvertisements();
+    // this.props.getAdvertisements();
   }
 
   saveEntity = (event, errors, values) => {
@@ -132,26 +132,26 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
                     }}
                   />
                 </AvGroup>
-                <AvGroup>
-                  <Label for="candidate-advertisement">Advertisement</Label>
-                  <AvInput
-                    id="candidate-advertisement"
-                    type="select"
-                    multiple
-                    className="form-control"
-                    name="advertisements"
-                    value={candidateEntity.advertisements && candidateEntity.advertisements.map(e => e.id)}
-                  >
-                    <option value="" key="0" />
-                    {advertisements
-                      ? advertisements.map(otherEntity => (
-                          <option value={otherEntity.id} key={otherEntity.id}>
-                            {otherEntity.id}
-                          </option>
-                        ))
-                      : null}
-                  </AvInput>
-                </AvGroup>
+                {/*<AvGroup>*/}
+                {/*  <Label for="candidate-advertisement">Advertisement</Label>*/}
+                {/*  <AvInput*/}
+                {/*    id="candidate-advertisement"*/}
+                {/*    type="select"*/}
+                {/*    multiple*/}
+                {/*    className="form-control"*/}
+                {/*    name="advertisements"*/}
+                {/*    value={candidateEntity.advertisements && candidateEntity.advertisements.map(e => e.id)}*/}
+                {/*  >*/}
+                {/*    <option value="" key="0" />*/}
+                {/*    {advertisements*/}
+                {/*      ? advertisements.map(otherEntity => (*/}
+                {/*          <option value={otherEntity.id} key={otherEntity.id}>*/}
+                {/*            {otherEntity.id}*/}
+                {/*          </option>*/}
+                {/*        ))*/}
+                {/*      : null}*/}
+                {/*  </AvInput>*/}
+                {/*</AvGroup>*/}
                 <Button tag={Link} id="cancel-save" to="/entity/candidate" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />
                   &nbsp;

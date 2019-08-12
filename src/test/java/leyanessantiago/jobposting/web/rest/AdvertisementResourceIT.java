@@ -3,6 +3,7 @@ package leyanessantiago.jobposting.web.rest;
 import leyanessantiago.jobposting.JobpostingApp;
 import leyanessantiago.jobposting.domain.Advertisement;
 import leyanessantiago.jobposting.domain.Profession;
+import leyanessantiago.jobposting.domain.User;
 import leyanessantiago.jobposting.repository.AdvertisementRepository;
 import leyanessantiago.jobposting.web.rest.errors.ExceptionTranslator;
 
@@ -98,6 +99,11 @@ public class AdvertisementResourceIT {
             profession = TestUtil.findAll(em, Profession.class).get(0);
         }
         advertisement.setProfession(profession);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        advertisement.setUser(user);
         return advertisement;
     }
     /**
@@ -121,6 +127,11 @@ public class AdvertisementResourceIT {
             profession = TestUtil.findAll(em, Profession.class).get(0);
         }
         advertisement.setProfession(profession);
+        // Add required entity
+        User user = UserResourceIT.createEntity(em);
+        em.persist(user);
+        em.flush();
+        advertisement.setUser(user);
         return advertisement;
     }
 
@@ -167,6 +178,7 @@ public class AdvertisementResourceIT {
         List<Advertisement> advertisementList = advertisementRepository.findAll();
         assertThat(advertisementList).hasSize(databaseSizeBeforeCreate);
     }
+
 
     @Test
     @Transactional
@@ -219,7 +231,7 @@ public class AdvertisementResourceIT {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
-
+    
     @Test
     @Transactional
     public void getAdvertisement() throws Exception {

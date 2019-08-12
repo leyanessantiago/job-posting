@@ -102,6 +102,19 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                   </AvGroup>
                 ) : null}
                 <AvGroup>
+                  <Label id="titleLabel" for="advertisement-title">
+                    Title
+                  </Label>
+                  <AvField
+                    id="advertisement-title"
+                    type="text"
+                    name="title"
+                    validate={{
+                      required: { value: true, errorMessage: 'This field is required.' }
+                    }}
+                  />
+                </AvGroup>
+                <AvGroup>
                   <Label id="descriptionLabel" for="advertisement-description">
                     Description
                   </Label>
@@ -121,26 +134,13 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                   </Label>
                 </AvGroup>
                 <AvGroup>
-                  <Label id="titleLabel" for="advertisement-title">
-                    Title
-                  </Label>
-                  <AvField
-                    id="advertisement-title"
-                    type="text"
-                    name="title"
-                    validate={{
-                      required: { value: true, errorMessage: 'This field is required.' }
-                    }}
-                  />
-                </AvGroup>
-                <AvGroup>
                   <Label for="advertisement-profession">Profession</Label>
                   <AvInput
                     id="advertisement-profession"
                     type="select"
                     className="form-control"
                     name="profession.id"
-                    value={isNew ? professions[0] && professions[0].id : advertisementEntity.profession.id}
+                    value={advertisementEntity.profession ? advertisementEntity.profession.id : null}
                     required
                   >
                     {professions
@@ -155,8 +155,14 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                 </AvGroup>
                 <AvGroup>
                   <Label for="advertisement-user">User</Label>
-                  <AvInput id="advertisement-user" type="select" className="form-control" name="user.id">
-                    <option value="" key="0" />
+                  <AvInput
+                    id="advertisement-user"
+                    type="select"
+                    className="form-control"
+                    name="user.id"
+                    value={advertisementEntity.user ? advertisementEntity.user.id : null}
+                    required
+                  >
                     {users
                       ? users.map(otherEntity => (
                           <option value={otherEntity.id} key={otherEntity.id}>
@@ -165,6 +171,7 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                         ))
                       : null}
                   </AvInput>
+                  <AvFeedback>This field is required.</AvFeedback>
                 </AvGroup>
                 <Button tag={Link} id="cancel-save" to="/entity/advertisement" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />

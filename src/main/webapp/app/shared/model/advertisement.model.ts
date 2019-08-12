@@ -4,9 +4,9 @@ import { IUser } from 'app/shared/model/user.model';
 
 export interface IAdvertisement {
   id?: number;
+  title?: string;
   description?: string;
   active?: boolean;
-  title?: string;
   profession?: IProfession;
   candidates?: ICandidate[];
   user?: IUser;
