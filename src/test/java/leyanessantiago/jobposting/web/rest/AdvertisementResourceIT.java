@@ -34,6 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = JobpostingApp.class)
 public class AdvertisementResourceIT {
 
+    private static final String DEFAULT_TITLE = "AAAAAAAAAA";
+    private static final String UPDATED_TITLE = "BBBBBBBBBB";
+
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
@@ -82,6 +85,7 @@ public class AdvertisementResourceIT {
      */
     public static Advertisement createEntity(EntityManager em) {
         Advertisement advertisement = new Advertisement()
+            .title(DEFAULT_TITLE)
             .description(DEFAULT_DESCRIPTION)
             .active(DEFAULT_ACTIVE);
         // Add required entity
@@ -104,6 +108,7 @@ public class AdvertisementResourceIT {
      */
     public static Advertisement createUpdatedEntity(EntityManager em) {
         Advertisement advertisement = new Advertisement()
+            .title(UPDATED_TITLE)
             .description(UPDATED_DESCRIPTION)
             .active(UPDATED_ACTIVE);
         // Add required entity
@@ -139,6 +144,7 @@ public class AdvertisementResourceIT {
         List<Advertisement> advertisementList = advertisementRepository.findAll();
         assertThat(advertisementList).hasSize(databaseSizeBeforeCreate + 1);
         Advertisement testAdvertisement = advertisementList.get(advertisementList.size() - 1);
+        assertThat(testAdvertisement.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testAdvertisement.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testAdvertisement.isActive()).isEqualTo(DEFAULT_ACTIVE);
     }
@@ -162,6 +168,23 @@ public class AdvertisementResourceIT {
         assertThat(advertisementList).hasSize(databaseSizeBeforeCreate);
     }
 
+    @Test
+    @Transactional
+    public void checkTitleIsRequired() throws Exception {
+        int databaseSizeBeforeTest = advertisementRepository.findAll().size();
+        // set the field null
+        advertisement.setTitle(null);
+
+        // Create the Advertisement, which fails.
+
+        restAdvertisementMockMvc.perform(post("/api/advertisements")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(advertisement)))
+            .andExpect(status().isBadRequest());
+
+        List<Advertisement> advertisementList = advertisementRepository.findAll();
+        assertThat(advertisementList).hasSize(databaseSizeBeforeTest);
+    }
 
     @Test
     @Transactional
@@ -192,10 +215,11 @@ public class AdvertisementResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(advertisement.getId().intValue())))
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
-    
+
     @Test
     @Transactional
     public void getAdvertisement() throws Exception {
@@ -207,6 +231,7 @@ public class AdvertisementResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(advertisement.getId().intValue()))
+            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()));
     }
@@ -232,6 +257,7 @@ public class AdvertisementResourceIT {
         // Disconnect from session so that the updates on updatedAdvertisement are not directly saved in db
         em.detach(updatedAdvertisement);
         updatedAdvertisement
+            .title(UPDATED_TITLE)
             .description(UPDATED_DESCRIPTION)
             .active(UPDATED_ACTIVE);
 
@@ -244,6 +270,7 @@ public class AdvertisementResourceIT {
         List<Advertisement> advertisementList = advertisementRepository.findAll();
         assertThat(advertisementList).hasSize(databaseSizeBeforeUpdate);
         Advertisement testAdvertisement = advertisementList.get(advertisementList.size() - 1);
+        assertThat(testAdvertisement.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testAdvertisement.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testAdvertisement.isActive()).isEqualTo(UPDATED_ACTIVE);
     }

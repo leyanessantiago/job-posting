@@ -30,6 +30,13 @@
     ],
     "fields": [
         {
+          "fieldName": "title",
+          "fieldType": "String",
+          "fieldValidateRules": [
+            "required"
+          ]
+        },
+        {
             "fieldName": "description",
             "fieldType": "String",
             "fieldValidateRules": [

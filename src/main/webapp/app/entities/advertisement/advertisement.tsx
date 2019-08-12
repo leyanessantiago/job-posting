@@ -67,6 +67,9 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
                   <th className="hand" onClick={this.sort('id')}>
                     ID <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={this.sort('title')}>
+                    Title <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th className="hand" onClick={this.sort('description')}>
                     Description <FontAwesomeIcon icon="sort" />
                   </th>
@@ -90,6 +93,7 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
                         {advertisement.id}
                       </Button>
                     </td>
+                    <td>{advertisement.title}</td>
                     <td>{advertisement.description}</td>
                     <td>{advertisement.active ? 'true' : 'false'}</td>
                     <td>

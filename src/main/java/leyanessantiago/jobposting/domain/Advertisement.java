@@ -27,6 +27,10 @@ public class Advertisement implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @NotNull
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -54,6 +58,19 @@ public class Advertisement implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Advertisement title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -154,6 +171,7 @@ public class Advertisement implements Serializable {
     public String toString() {
         return "Advertisement{" +
             "id=" + getId() +
+            ", title='" + getTitle() + "'" +
             ", description='" + getDescription() + "'" +
             ", active='" + isActive() + "'" +
             "}";

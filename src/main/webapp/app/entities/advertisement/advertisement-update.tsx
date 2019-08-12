@@ -121,6 +121,19 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                   </Label>
                 </AvGroup>
                 <AvGroup>
+                  <Label id="titleLabel" for="advertisement-title">
+                    Title
+                  </Label>
+                  <AvField
+                    id="advertisement-title"
+                    type="text"
+                    name="title"
+                    validate={{
+                      required: { value: true, errorMessage: 'This field is required.' }
+                    }}
+                  />
+                </AvGroup>
+                <AvGroup>
                   <Label for="advertisement-profession">Profession</Label>
                   <AvInput
                     id="advertisement-profession"

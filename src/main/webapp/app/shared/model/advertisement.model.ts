@@ -6,6 +6,7 @@ export interface IAdvertisement {
   id?: number;
   description?: string;
   active?: boolean;
+  title?: string;
   profession?: IProfession;
   candidates?: ICandidate[];
   user?: IUser;
