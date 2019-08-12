@@ -16,4 +16,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     @Query("select advertisement from Advertisement advertisement where advertisement.user.login = ?#{principal.username}")
     List<Advertisement> findByUserIsCurrentUser();
 
+    @Query("select advertisement from Advertisement advertisement where advertisement.active = true")
+    List<Advertisement> findByActiveIsActive();
 }

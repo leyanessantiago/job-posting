@@ -102,6 +102,18 @@ public class AdvertisementResource {
     }
 
     /**
+     * {@code GET  /advertisements/active} : get all the active advertisements.
+
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of active advertisements in body.
+     */
+    @GetMapping("/advertisements/active")
+    public ResponseEntity<List<Advertisement>> getActiveAdvertisements() {
+        log.debug("REST request to get the active Advertisements");
+        List<Advertisement> activeAdvertisements = advertisementRepository.findByActiveIsActive();
+        return ResponseEntity.ok().body(activeAdvertisements);
+    }
+
+    /**
      * {@code GET  /advertisements/:id} : get the "id" advertisement.
      *
      * @param id the id of the advertisement to retrieve.

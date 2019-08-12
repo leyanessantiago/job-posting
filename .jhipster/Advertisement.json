@@ -23,6 +23,9 @@
             "relationshipName": "user",
             "otherEntityName": "user",
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
             "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "advertisement"
@@ -30,11 +33,11 @@
     ],
     "fields": [
         {
-          "fieldName": "title",
-          "fieldType": "String",
-          "fieldValidateRules": [
-            "required"
-          ]
+            "fieldName": "title",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "description",

@@ -47,7 +47,8 @@ public class Advertisement implements Serializable {
     @JsonIgnore
     private Set<Candidate> candidates = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("advertisements")
     private User user;
 

@@ -1,98 +1,107 @@
 import './home.scss';
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { Fragment } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
+import { Alert, Card, CardBody, CardTitle, CardSubtitle, CardText, CardDeck, Button } from 'reactstrap';
 
 import { IRootState } from 'app/shared/reducers';
+import { IAdvertisement } from 'app/shared/model/advertisement.model';
+import { uniqueId } from 'app/shared/util/unique-id';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getActiveEntities as getActiveAdvertisements } from 'app/entities/advertisement/advertisement.reducer';
 
-export type IHomeProp = StateProps;
+export interface IHomeProp extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
-export const Home = (props: IHomeProp) => {
-  const { account } = props;
+export class Home extends React.Component<IHomeProp> {
+  componentDidMount() {
+    this.getActiveAdvertisements();
+  }
 
-  return (
-    <Row>
-      <Col md="9">
-        <h2>Welcome, Java Hipster!</h2>
-        <p className="lead">This is your homepage</p>
-        {account && account.login ? (
-          <div>
-            <Alert color="success">You are logged in as user {account.login}.</Alert>
-          </div>
-        ) : (
-          <div>
-            <Alert color="warning">
-              If you want to
-              <Link to="/login" className="alert-link">
-                {' '}
-                sign in
-              </Link>
-              , you can try the default accounts:
-              <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-              <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
-            </Alert>
+  getActiveAdvertisements = () => {
+    this.props.getActiveAdvertisements();
+  };
 
-            <Alert color="warning">
-              You do not have an account yet?&nbsp;
-              <Link to="/register" className="alert-link">
-                Register a new account
-              </Link>
-            </Alert>
-          </div>
-        )}
-        <p>If you have any question on JHipster:</p>
+  renderCompany(companyName: string) {
+    if (companyName) {
+      return (
+        <Fragment>
+          <FontAwesomeIcon icon="building" fixedWidth /> {companyName}
+        </Fragment>
+      );
+    }
+    return null;
+  }
 
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              JHipster homepage
-            </a>
-          </li>
-          <li>
-            <a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              JHipster on Stack Overflow
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-              JHipster bug tracker
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              JHipster public chat room
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/java_hipster" target="_blank" rel="noopener noreferrer">
-              follow @java_hipster on Twitter
-            </a>
-          </li>
-        </ul>
+  renderProfession(professionName: string) {
+    if (professionName) {
+      return (
+        <Fragment>
+          <FontAwesomeIcon icon="building" fixedWidth /> {professionName}
+        </Fragment>
+      );
+    }
+    return null;
+  }
 
-        <p>
-          If you like JHipster, do not forget to give us a star on{' '}
-          <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-            Github
-          </a>
-          !
-        </p>
-      </Col>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
-      </Col>
-    </Row>
-  );
-};
+  renderAdvertisements = () => {
+    const { activeAdvertisementList, match } = this.props;
+    return activeAdvertisementList.map((ads: IAdvertisement) => {
+      let description = ads.description;
+      if (description.length > 200) {
+        description = description.slice(0, 200).concat('...');
+      }
+
+      return (
+        <Link key={uniqueId('home-advertisement')} to={`${match.url}entity/advertisement/${ads.id}`} className="ads-card-wrapper">
+          <Card body outline color="info" className="ads-card">
+            <CardBody className="ads-card-body">
+              <CardTitle className="ads-title">{ads.title}</CardTitle>
+              <CardSubtitle className="ads-subtitle">
+                {this.renderCompany(ads.user.companyName)}
+                {this.renderProfession(ads.profession.name)}
+              </CardSubtitle>
+              <CardText className="ads-description">{description}</CardText>
+              <Button tag={Link} to={`${match.url}entity/candidate/new`} color="primary" className="float-right">
+                Apply
+              </Button>
+            </CardBody>
+          </Card>
+        </Link>
+      );
+    });
+  };
+
+  render() {
+    const { account } = this.props;
+
+    if (account && account.login) {
+      return (
+        <div>
+          <Alert color="success">You are logged in as user {account.login}.</Alert>
+        </div>
+      );
+    }
+
+    return <CardDeck>{this.renderAdvertisements()}</CardDeck>;
+  }
+}
 
 const mapStateToProps = storeState => ({
   account: storeState.authentication.account,
-  isAuthenticated: storeState.authentication.isAuthenticated
+  isAuthenticated: storeState.authentication.isAuthenticated,
+  activeAdvertisementList: storeState.advertisement.activeEntities
 });
 
-type StateProps = ReturnType<typeof mapStateToProps>;
+const mapDispatchToProps = {
+  getActiveAdvertisements
+};
 
-export default connect(mapStateToProps)(Home);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);

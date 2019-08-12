@@ -31,6 +31,7 @@ describe('Entities reducer tests', () => {
     loading: false,
     errorMessage: null,
     entities: [] as ReadonlyArray<IAdvertisement>,
+    activeEntities: [] as ReadonlyArray<IAdvertisement>,
     entity: defaultValue,
     totalItems: 0,
     updating: false,
