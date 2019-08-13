@@ -79,6 +79,12 @@ public class AdvertisementResource {
         if (advertisement.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+        if (advertisement.isActive()) {
+            Long activeCount = advertisementRepository.countActiveByUserIsCurrentUser();
+            if (activeCount >= 10) {
+                throw new BadRequestAlertException("You can only have 10 active advertisements", "Advertisement", "active");
+            }
+        }
         Advertisement result = advertisementRepository.save(advertisement);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, advertisement.getId().toString()))
@@ -98,6 +104,8 @@ public class AdvertisementResource {
         log.debug("REST request to get a page of Advertisements");
         Page<Advertisement> page = advertisementRepository.findByUserIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        Long activeCount = advertisementRepository.countActiveByUserIsCurrentUser();
+        headers.add("X-Active-Count", activeCount.toString());
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 

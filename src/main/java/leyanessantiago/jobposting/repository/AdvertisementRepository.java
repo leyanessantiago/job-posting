@@ -18,10 +18,12 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     @Query("select advertisement from Advertisement advertisement where advertisement.user.login = ?#{principal.username}")
     List<Advertisement> findByUserIsCurrentUser();
 
-    @Query(value = "select advertisement from Advertisement advertisement where advertisement.user.login = ?#{principal.username}",
-        countQuery = "select count(distinct advertisement) from Advertisement advertisement")
+    @Query(value = "select advertisement from Advertisement advertisement where advertisement.user.login = ?#{principal.username}")
     Page<Advertisement> findByUserIsCurrentUser(Pageable pageable);
 
     @Query("select advertisement from Advertisement advertisement where advertisement.active = true")
     List<Advertisement> findByActiveIsActive();
+
+    @Query("select count(advertisement) from Advertisement advertisement where advertisement.active = true and advertisement.user.login = ?#{principal.username}")
+    Long countActiveByUserIsCurrentUser();
 }

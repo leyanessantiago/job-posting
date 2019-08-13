@@ -22,6 +22,14 @@ a {
   }
 }
 
+.entity-table {
+  tr td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 .app-container {
   box-sizing: border-box;
   .view-container {
