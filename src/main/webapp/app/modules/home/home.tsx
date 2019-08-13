@@ -63,7 +63,7 @@ export class Home extends React.Component<IHomeProp> {
                 {this.renderProfession(ads.profession.name)}
               </CardSubtitle>
               <CardText className="ads-description">{description}</CardText>
-              <Button tag={Link} to={`${match.url}entity/candidate/new`} color="primary" className="float-right">
+              <Button tag={Link} to={`${match.url}advertisement/${ads.id}/apply`} color="primary" className="float-right">
                 Apply
               </Button>
             </CardBody>

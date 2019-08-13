@@ -11,7 +11,7 @@ import CandidateDeleteDialog from './candidate-delete-dialog';
 const Routes = ({ match }) => (
   <>
     <Switch>
-      {/*<ErrorBoundaryRoute exact path={`${match.url}/new`} component={CandidateUpdate} />*/}
+      <ErrorBoundaryRoute exact path={`${match.url}/new`} component={CandidateUpdate} />
       <ErrorBoundaryRoute exact path={`${match.url}/:id/edit`} component={CandidateUpdate} />
       <ErrorBoundaryRoute exact path={`${match.url}/:id`} component={CandidateDetail} />
       <ErrorBoundaryRoute path={match.url} component={Candidate} />

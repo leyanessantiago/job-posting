@@ -122,7 +122,6 @@ export const createEntity: ICrudPutAction<ICandidate> = entity => async dispatch
     type: ACTION_TYPES.CREATE_CANDIDATE,
     payload: axios.post(apiUrl, cleanEntity(entity))
   });
-  dispatch(getEntities());
   return result;
 };
 
@@ -131,7 +130,6 @@ export const updateEntity: ICrudPutAction<ICandidate> = entity => async dispatch
     type: ACTION_TYPES.UPDATE_CANDIDATE,
     payload: axios.put(apiUrl, cleanEntity(entity))
   });
-  dispatch(getEntities());
   return result;
 };
 

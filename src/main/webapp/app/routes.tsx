@@ -40,7 +40,7 @@ const Routes = () => (
       <ErrorBoundaryRoute path="/reset/finish/:key?" component={PasswordResetFinish} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
-      <ErrorBoundaryRoute exact path={`/entity/candidate/new`} component={CandidateUpdate} />
+      <ErrorBoundaryRoute exact path={`/advertisement/:advertisementId/apply`} component={CandidateUpdate} />
       <ErrorBoundaryRoute exact path={`/entity/advertisement/:id`} component={AdvertisementDetail} />
       <PrivateRoute path="/entity" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />

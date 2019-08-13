@@ -96,7 +96,7 @@ public class AdvertisementResource {
     @GetMapping("/advertisements")
     public ResponseEntity<List<Advertisement>> getAllAdvertisements(Pageable pageable) {
         log.debug("REST request to get a page of Advertisements");
-        Page<Advertisement> page = advertisementRepository.findAll(pageable);
+        Page<Advertisement> page = advertisementRepository.findByUserIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
