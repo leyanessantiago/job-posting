@@ -2,32 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col, Label } from 'reactstrap';
-import { AvFeedback, AvForm, AvGroup, AvInput, AvField } from 'availity-reactstrap-validation';
-// tslint:disable-next-line:no-unused-variable
-import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction } from 'react-jhipster';
+import { AvForm, AvGroup, AvInput, AvField } from 'availity-reactstrap-validation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { IAdvertisement } from 'app/shared/model/advertisement.model';
-import { getEntities as getAdvertisements } from 'app/entities/advertisement/advertisement.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './candidate.reducer';
-import { ICandidate } from 'app/shared/model/candidate.model';
-// tslint:disable-next-line:no-unused-variable
-import { convertDateTimeFromServer, convertDateTimeToServer } from 'app/shared/util/date-utils';
-import { mapIdList } from 'app/shared/util/entity-utils';
 
-export interface ICandidateUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
+export interface ICandidateUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string; advertisementId: string }> {}
 
 export interface ICandidateUpdateState {
   isNew: boolean;
-  idsadvertisement: any[];
 }
 
 export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICandidateUpdateState> {
   constructor(props) {
     super(props);
     this.state = {
-      idsadvertisement: [],
       isNew: !this.props.match.params || !this.props.match.params.id
     };
   }
@@ -44,17 +34,16 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
     } else {
       this.props.getEntity(this.props.match.params.id);
     }
-
-    // this.props.getAdvertisements();
   }
 
   saveEntity = (event, errors, values) => {
     if (errors.length === 0) {
-      const { candidateEntity } = this.props;
+      const { candidateEntity, match } = this.props;
+      const advertisementId = match.params ? match.params.advertisementId : null;
       const entity = {
         ...candidateEntity,
         ...values,
-        advertisements: mapIdList(values.advertisements)
+        advertisements: [{ id: advertisementId }]
       };
 
       if (this.state.isNew) {
@@ -66,11 +55,11 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
   };
 
   handleClose = () => {
-    this.props.history.push('/entity/candidate');
+    this.props.history.goBack();
   };
 
   render() {
-    const { candidateEntity, advertisements, loading, updating } = this.props;
+    const { candidateEntity, loading, updating } = this.props;
     const { isNew } = this.state;
 
     return (
@@ -132,26 +121,6 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
                     }}
                   />
                 </AvGroup>
-                {/*<AvGroup>*/}
-                {/*  <Label for="candidate-advertisement">Advertisement</Label>*/}
-                {/*  <AvInput*/}
-                {/*    id="candidate-advertisement"*/}
-                {/*    type="select"*/}
-                {/*    multiple*/}
-                {/*    className="form-control"*/}
-                {/*    name="advertisements"*/}
-                {/*    value={candidateEntity.advertisements && candidateEntity.advertisements.map(e => e.id)}*/}
-                {/*  >*/}
-                {/*    <option value="" key="0" />*/}
-                {/*    {advertisements*/}
-                {/*      ? advertisements.map(otherEntity => (*/}
-                {/*          <option value={otherEntity.id} key={otherEntity.id}>*/}
-                {/*            {otherEntity.id}*/}
-                {/*          </option>*/}
-                {/*        ))*/}
-                {/*      : null}*/}
-                {/*  </AvInput>*/}
-                {/*</AvGroup>*/}
                 <Button tag={Link} id="cancel-save" to="/entity/candidate" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />
                   &nbsp;
@@ -172,7 +141,6 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
 }
 
 const mapStateToProps = (storeState: IRootState) => ({
-  advertisements: storeState.advertisement.entities,
   candidateEntity: storeState.candidate.entity,
   loading: storeState.candidate.loading,
   updating: storeState.candidate.updating,
@@ -180,7 +148,6 @@ const mapStateToProps = (storeState: IRootState) => ({
 });
 
 const mapDispatchToProps = {
-  getAdvertisements,
   getEntity,
   updateEntity,
   createEntity,

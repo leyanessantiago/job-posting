@@ -1,5 +1,6 @@
 package leyanessantiago.jobposting.web.rest;
 
+import leyanessantiago.jobposting.domain.Advertisement;
 import leyanessantiago.jobposting.domain.Candidate;
 import leyanessantiago.jobposting.repository.CandidateRepository;
 import leyanessantiago.jobposting.web.rest.errors.BadRequestAlertException;
@@ -58,7 +59,25 @@ public class CandidateResource {
         if (candidate.getId() != null) {
             throw new BadRequestAlertException("A new candidate cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Candidate result = candidateRepository.save(candidate);
+        Candidate result;
+        Optional<Candidate> existentCandidate = candidateRepository.findByEmailWithEagerRelationships(candidate.getEmail());
+        if (existentCandidate != null) {
+            Candidate candidateToSave = existentCandidate.get();
+            Boolean isChangingNames = candidate.getFirstName() != candidateToSave.getFirstName()
+                || candidate.getLastName() != candidateToSave.getLastName();
+            if (isChangingNames) {
+                throw new BadRequestAlertException("A candidate with the same email already exists, If you have any question please contact with the admin", "Candidate", "email");
+            }
+            Advertisement advertisement = candidate.getAdvertisements().stream().findFirst().get();
+            Boolean hasThisAdvertisement = existentCandidate.get().getAdvertisements().stream().anyMatch(ads -> ads.getId() == advertisement.getId());
+            if (hasThisAdvertisement) {
+                throw new BadRequestAlertException("You can only apply once for each advertisement", "Job Application", "jobApplication");
+            }
+            candidateToSave.setAdvertisements(candidate.getAdvertisements());
+            result = candidateRepository.save(candidateToSave);
+        } else {
+            result = candidateRepository.save(candidate);
+        }
         return ResponseEntity.created(new URI("/api/candidates/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
