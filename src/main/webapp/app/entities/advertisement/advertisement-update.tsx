@@ -55,15 +55,16 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
 
     this.props.getProfessions();
     this.props.getCandidates();
-    this.props.getUsers();
+    // this.props.getUsers();
   }
 
   saveEntity = (event, errors, values) => {
     if (errors.length === 0) {
-      const { advertisementEntity } = this.props;
+      const { advertisementEntity, account } = this.props;
       const entity = {
         ...advertisementEntity,
-        ...values
+        ...values,
+        user: { id: account.id }
       };
 
       if (this.state.isNew) {
@@ -119,20 +120,21 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                     Description
                   </Label>
                   <AvField
+                    style={{ minHeight: '180px' }}
                     id="advertisement-description"
-                    type="text"
+                    type="textarea"
                     name="description"
                     validate={{
                       required: { value: true, errorMessage: 'This field is required.' }
                     }}
                   />
                 </AvGroup>
-                <AvGroup>
-                  <Label id="activeLabel" check>
-                    <AvInput id="advertisement-active" type="checkbox" className="form-control" name="active" />
-                    Active
-                  </Label>
-                </AvGroup>
+                {/*<AvGroup>*/}
+                {/*  <Label id="activeLabel" check>*/}
+                {/*    <AvInput id="advertisement-active" type="checkbox" className="form-control" name="active" />*/}
+                {/*    Active*/}
+                {/*  </Label>*/}
+                {/*</AvGroup>*/}
                 <AvGroup>
                   <Label for="advertisement-profession">Profession</Label>
                   <AvInput
@@ -153,26 +155,26 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                   </AvInput>
                   <AvFeedback>This field is required.</AvFeedback>
                 </AvGroup>
-                <AvGroup>
-                  <Label for="advertisement-user">User</Label>
-                  <AvInput
-                    id="advertisement-user"
-                    type="select"
-                    className="form-control"
-                    name="user.id"
-                    value={advertisementEntity.user ? advertisementEntity.user.id : null}
-                    required
-                  >
-                    {users
-                      ? users.map(otherEntity => (
-                          <option value={otherEntity.id} key={otherEntity.id}>
-                            {otherEntity.login}
-                          </option>
-                        ))
-                      : null}
-                  </AvInput>
-                  <AvFeedback>This field is required.</AvFeedback>
-                </AvGroup>
+                {/*<AvGroup>*/}
+                {/*  <Label for="advertisement-user">User</Label>*/}
+                {/*  <AvInput*/}
+                {/*    id="advertisement-user"*/}
+                {/*    type="select"*/}
+                {/*    className="form-control"*/}
+                {/*    name="user.id"*/}
+                {/*    value={advertisementEntity.user ? advertisementEntity.user.id : null}*/}
+                {/*    required*/}
+                {/*  >*/}
+                {/*    {users*/}
+                {/*      ? users.map(otherEntity => (*/}
+                {/*          <option value={otherEntity.id} key={otherEntity.id}>*/}
+                {/*            {otherEntity.login}*/}
+                {/*          </option>*/}
+                {/*        ))*/}
+                {/*      : null}*/}
+                {/*  </AvInput>*/}
+                {/*  <AvFeedback>This field is required.</AvFeedback>*/}
+                {/*</AvGroup>*/}
                 <Button tag={Link} id="cancel-save" to="/entity/advertisement" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />
                   &nbsp;
@@ -199,7 +201,8 @@ const mapStateToProps = (storeState: IRootState) => ({
   advertisementEntity: storeState.advertisement.entity,
   loading: storeState.advertisement.loading,
   updating: storeState.advertisement.updating,
-  updateSuccess: storeState.advertisement.updateSuccess
+  updateSuccess: storeState.advertisement.updateSuccess,
+  account: storeState.authentication.account
 });
 
 const mapDispatchToProps = {

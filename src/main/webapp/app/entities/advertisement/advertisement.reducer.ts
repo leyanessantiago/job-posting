@@ -1,31 +1,31 @@
 import axios from 'axios';
-import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction, getSortState } from 'react-jhipster';
+import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IAdvertisement, defaultValue } from 'app/shared/model/advertisement.model';
-import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 
 export const ACTION_TYPES = {
   FETCH_ADVERTISEMENT_LIST: 'advertisement/FETCH_ADVERTISEMENT_LIST',
-  FETCH_ACTIVE_ADVERTISEMENT_LIST: 'advertisement/FETCH_ACTIVE_ADVERTISEMENT_LIST',
   FETCH_ADVERTISEMENT: 'advertisement/FETCH_ADVERTISEMENT',
   CREATE_ADVERTISEMENT: 'advertisement/CREATE_ADVERTISEMENT',
   UPDATE_ADVERTISEMENT: 'advertisement/UPDATE_ADVERTISEMENT',
   DELETE_ADVERTISEMENT: 'advertisement/DELETE_ADVERTISEMENT',
-  RESET: 'advertisement/RESET'
+  RESET: 'advertisement/RESET',
+  FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST: 'advertisement/FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST'
 };
 
 const initialState = {
   loading: false,
   errorMessage: null,
   entities: [] as ReadonlyArray<IAdvertisement>,
-  activeEntities: [] as ReadonlyArray<IAdvertisement>,
+  activeEntitiesCount: 0,
   entity: defaultValue,
   updating: false,
   totalItems: 0,
-  updateSuccess: false
+  updateSuccess: false,
+  allActiveEntities: [] as ReadonlyArray<IAdvertisement>
 };
 
 export type AdvertisementState = Readonly<typeof initialState>;
@@ -35,7 +35,7 @@ export type AdvertisementState = Readonly<typeof initialState>;
 export default (state: AdvertisementState = initialState, action): AdvertisementState => {
   switch (action.type) {
     case REQUEST(ACTION_TYPES.FETCH_ADVERTISEMENT_LIST):
-    case REQUEST(ACTION_TYPES.FETCH_ACTIVE_ADVERTISEMENT_LIST):
+    case REQUEST(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
     case REQUEST(ACTION_TYPES.FETCH_ADVERTISEMENT):
       return {
         ...state,
@@ -53,7 +53,7 @@ export default (state: AdvertisementState = initialState, action): Advertisement
         updating: true
       };
     case FAILURE(ACTION_TYPES.FETCH_ADVERTISEMENT_LIST):
-    case FAILURE(ACTION_TYPES.FETCH_ACTIVE_ADVERTISEMENT_LIST):
+    case FAILURE(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
     case FAILURE(ACTION_TYPES.FETCH_ADVERTISEMENT):
     case FAILURE(ACTION_TYPES.CREATE_ADVERTISEMENT):
     case FAILURE(ACTION_TYPES.UPDATE_ADVERTISEMENT):
@@ -70,13 +70,14 @@ export default (state: AdvertisementState = initialState, action): Advertisement
         ...state,
         loading: false,
         entities: action.payload.data,
-        totalItems: parseInt(action.payload.headers['x-total-count'], 10)
+        totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+        activeEntitiesCount: parseInt(action.payload.headers['x-active-count'], 10)
       };
-    case SUCCESS(ACTION_TYPES.FETCH_ACTIVE_ADVERTISEMENT_LIST):
+    case SUCCESS(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
       return {
         ...state,
         loading: false,
-        activeEntities: action.payload.data
+        allActiveEntities: action.payload.data
       };
     case SUCCESS(ACTION_TYPES.FETCH_ADVERTISEMENT):
       return {
@@ -123,7 +124,7 @@ export const getEntities: ICrudGetAllAction<IAdvertisement> = (page, size, sort)
 // tslint:disable-next-line:ter-arrow-body-style
 export const getActiveEntities: ICrudGetAllAction<IAdvertisement> = () => {
   return {
-    type: ACTION_TYPES.FETCH_ACTIVE_ADVERTISEMENT_LIST,
+    type: ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST,
     payload: axios.get<IAdvertisement>(`${apiUrl}/active?cacheBuster=${new Date().getTime()}`)
   };
 };

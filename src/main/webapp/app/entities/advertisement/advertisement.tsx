@@ -1,13 +1,15 @@
+/* tslint:disable:jsx-no-lambda */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Col, Row, Table } from 'reactstrap';
+import { Button, Col, Row, Table, Input } from 'reactstrap';
+import './advertisement.scss';
 // tslint:disable-next-line:no-unused-variable
 import { ICrudGetAllAction, getSortState, IPaginationBaseState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities } from './advertisement.reducer';
+import { getEntities, updateEntity } from './advertisement.reducer';
 import { IAdvertisement } from 'app/shared/model/advertisement.model';
 // tslint:disable-next-line:no-unused-variable
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
@@ -48,8 +50,15 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
     this.props.getEntities(activePage - 1, itemsPerPage, `${sort},${order}`);
   };
 
+  handleActive = async (event: any, advertisement: IAdvertisement) => {
+    const entity = advertisement;
+    entity.active = event.target.checked;
+    await this.props.updateEntity(entity);
+    this.getEntities();
+  };
+
   render() {
-    const { advertisementList, match, totalItems } = this.props;
+    const { advertisementList, match, totalItems, activeAdvertisementsCount } = this.props;
     return (
       <div>
         <h2 id="advertisement-heading">
@@ -61,7 +70,7 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
         </h2>
         <div className="table-responsive">
           {advertisementList && advertisementList.length > 0 ? (
-            <Table responsive>
+            <Table responsive className="entity-table">
               <thead>
                 <tr>
                   <th className="hand" onClick={this.sort('id')}>
@@ -79,9 +88,6 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
                   <th>
                     Profession <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th>
-                    User <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th />
                 </tr>
               </thead>
@@ -94,8 +100,15 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
                       </Button>
                     </td>
                     <td>{advertisement.title}</td>
-                    <td>{advertisement.description}</td>
-                    <td>{advertisement.active ? 'true' : 'false'}</td>
+                    <td className="hand advertisement-description-column">{advertisement.description}</td>
+                    <td className="advertisement-active-column">
+                      <Input
+                        type="checkbox"
+                        checked={advertisement.active}
+                        disabled={!advertisement.active && activeAdvertisementsCount >= 10}
+                        onChange={event => this.handleActive(event, advertisement)}
+                      />
+                    </td>
                     <td>
                       {advertisement.profession ? (
                         <Link to={`profession/${advertisement.profession.id}`}>{advertisement.profession.name}</Link>
@@ -103,7 +116,6 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
                         ''
                       )}
                     </td>
-                    <td>{advertisement.user ? advertisement.user.login : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${advertisement.id}`} color="info" size="sm">
@@ -146,11 +158,13 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
 
 const mapStateToProps = ({ advertisement }: IRootState) => ({
   advertisementList: advertisement.entities,
-  totalItems: advertisement.totalItems
+  totalItems: advertisement.totalItems,
+  activeAdvertisementsCount: advertisement.activeEntitiesCount
 });
 
 const mapDispatchToProps = {
-  getEntities
+  getEntities,
+  updateEntity
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

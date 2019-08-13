@@ -48,11 +48,6 @@ export class Home extends React.Component<IHomeProp> {
   renderAdvertisements = () => {
     const { activeAdvertisementList, match } = this.props;
     return activeAdvertisementList.map((ads: IAdvertisement) => {
-      let description = ads.description;
-      if (description.length > 200) {
-        description = description.slice(0, 200).concat('...');
-      }
-
       return (
         <Link key={uniqueId('home-advertisement')} to={`${match.url}entity/advertisement/${ads.id}`} className="ads-card-wrapper">
           <Card body outline color="info" className="ads-card">
@@ -62,7 +57,7 @@ export class Home extends React.Component<IHomeProp> {
                 {this.renderCompany(ads.user.companyName)}
                 {this.renderProfession(ads.profession.name)}
               </CardSubtitle>
-              <CardText className="ads-description">{description}</CardText>
+              <CardText className="ads-description">{ads.description}</CardText>
               <Button tag={Link} to={`${match.url}advertisement/${ads.id}/apply`} color="primary" className="float-right">
                 Apply
               </Button>
@@ -91,7 +86,7 @@ export class Home extends React.Component<IHomeProp> {
 const mapStateToProps = storeState => ({
   account: storeState.authentication.account,
   isAuthenticated: storeState.authentication.isAuthenticated,
-  activeAdvertisementList: storeState.advertisement.activeEntities
+  activeAdvertisementList: storeState.advertisement.allActiveEntities
 });
 
 const mapDispatchToProps = {
