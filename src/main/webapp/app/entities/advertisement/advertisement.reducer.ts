@@ -1,4 +1,3 @@
-// tslint:disable:ter-arrow-body-style
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
@@ -132,19 +131,20 @@ export const getEntities: ICrudGetAllAction<IAdvertisement> = (page, size, sort)
   };
 };
 
-export const getActiveEntities: ICrudGetAllAction<IAdvertisement> = () => {
-  return {
-    type: ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST,
-    payload: axios.get<IAdvertisement>(`${apiUrl}/active?cacheBuster=${new Date().getTime()}`)
-  };
-};
+export const getActiveEntities: ICrudGetAllAction<IAdvertisement> = () => ({
+  type: ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST,
+  payload: axios.get<IAdvertisement>(`${apiUrl}/active?cacheBuster=${new Date().getTime()}`)
+});
 
-export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => {
-  return {
-    type: ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION,
-    payload: axios.get<IAdvertisement>(`${apiUrl}/active/by-profession?cacheBuster=${new Date().getTime()}`)
-  };
-};
+export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => ({
+  type: ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION,
+  payload: axios.get<IAdvertisement>(`${apiUrl}/active/by-profession?cacheBuster=${new Date().getTime()}`)
+});
+
+export const getEntitiesByProfessionByCurrentUser: ICrudGetAllAction<IAdvertisement> = () => ({
+  type: ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION,
+  payload: axios.get<IAdvertisement>(`${apiUrl}/active/by-profession/by-user?cacheBuster=${new Date().getTime()}`)
+});
 
 export const getEntity: ICrudGetAction<IAdvertisement> = id => {
   const requestUrl = `${apiUrl}/${id}`;

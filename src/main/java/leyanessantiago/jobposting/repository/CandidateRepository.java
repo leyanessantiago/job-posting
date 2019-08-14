@@ -32,4 +32,7 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     @Query("select advertisement.profession.id, count(jobApplication.candidate.id) from JobApplication jobApplication, Advertisement advertisement where jobApplication.advertisement.id = advertisement.id group by (advertisement.profession.id)")
     List<Object[]> countByProfession();
 
+    @Query("select advertisement.profession.id, count(jobApplication.candidate.id) from JobApplication jobApplication, Advertisement advertisement where jobApplication.advertisement.id = advertisement.id and advertisement.user.login = ?#{principal.username} group by (advertisement.profession.id)")
+    List<Object[]> countByProfessionByUserIsCurrentUser();
+
 }
