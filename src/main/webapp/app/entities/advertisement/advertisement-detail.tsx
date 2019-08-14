@@ -20,7 +20,7 @@ export class AdvertisementDetail extends React.Component<IAdvertisementDetailPro
     if (user && user.companyName) {
       return (
         <li className="advertisement-details-item">
-          <FontAwesomeIcon icon="building" fixedWidth /> {user.companyName}
+          <FontAwesomeIcon icon="briefcase" fixedWidth /> {user.companyName}
         </li>
       );
     }
@@ -32,7 +32,7 @@ export class AdvertisementDetail extends React.Component<IAdvertisementDetailPro
     if (profession && profession.name) {
       return (
         <li className="advertisement-details-item">
-          <FontAwesomeIcon icon="building" fixedWidth /> {profession.name}
+          <FontAwesomeIcon icon="briefcase" fixedWidth /> {profession.name}
         </li>
       );
     }

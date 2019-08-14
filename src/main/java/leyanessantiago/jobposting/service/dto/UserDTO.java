@@ -35,7 +35,7 @@ public class UserDTO {
     @Size(min = 5, max = 254)
     private String email;
 
-    @Size(max = 50)
+    @Size(max = 100)
     private String companyName;
 
     @Size(max = 256)

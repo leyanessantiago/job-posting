@@ -52,7 +52,7 @@ export class Home extends React.Component<IHomeProp> {
     if (professionName) {
       return (
         <Fragment>
-          <FontAwesomeIcon icon="building" fixedWidth /> {professionName}
+          <FontAwesomeIcon icon="briefcase" fixedWidth /> {professionName}
         </Fragment>
       );
     }
