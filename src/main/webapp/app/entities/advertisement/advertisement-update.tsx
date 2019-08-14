@@ -3,22 +3,13 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col, Label } from 'reactstrap';
 import { AvFeedback, AvForm, AvGroup, AvInput, AvField } from 'availity-reactstrap-validation';
-// tslint:disable-next-line:no-unused-variable
-import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { IProfession } from 'app/shared/model/profession.model';
 import { getEntities as getProfessions } from 'app/entities/profession/profession.reducer';
-import { ICandidate } from 'app/shared/model/candidate.model';
 import { getEntities as getCandidates } from 'app/entities/candidate/candidate.reducer';
-import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './advertisement.reducer';
-import { IAdvertisement } from 'app/shared/model/advertisement.model';
-// tslint:disable-next-line:no-unused-variable
-import { convertDateTimeFromServer, convertDateTimeToServer } from 'app/shared/util/date-utils';
-import { mapIdList } from 'app/shared/util/entity-utils';
 
 export interface IAdvertisementUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
@@ -55,7 +46,6 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
 
     this.props.getProfessions();
     this.props.getCandidates();
-    // this.props.getUsers();
   }
 
   saveEntity = (event, errors, values) => {
@@ -129,12 +119,6 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                     }}
                   />
                 </AvGroup>
-                {/*<AvGroup>*/}
-                {/*  <Label id="activeLabel" check>*/}
-                {/*    <AvInput id="advertisement-active" type="checkbox" className="form-control" name="active" />*/}
-                {/*    Active*/}
-                {/*  </Label>*/}
-                {/*</AvGroup>*/}
                 <AvGroup>
                   <Label for="advertisement-profession">Profession</Label>
                   <AvInput
@@ -155,26 +139,6 @@ export class AdvertisementUpdate extends React.Component<IAdvertisementUpdatePro
                   </AvInput>
                   <AvFeedback>This field is required.</AvFeedback>
                 </AvGroup>
-                {/*<AvGroup>*/}
-                {/*  <Label for="advertisement-user">User</Label>*/}
-                {/*  <AvInput*/}
-                {/*    id="advertisement-user"*/}
-                {/*    type="select"*/}
-                {/*    className="form-control"*/}
-                {/*    name="user.id"*/}
-                {/*    value={advertisementEntity.user ? advertisementEntity.user.id : null}*/}
-                {/*    required*/}
-                {/*  >*/}
-                {/*    {users*/}
-                {/*      ? users.map(otherEntity => (*/}
-                {/*          <option value={otherEntity.id} key={otherEntity.id}>*/}
-                {/*            {otherEntity.login}*/}
-                {/*          </option>*/}
-                {/*        ))*/}
-                {/*      : null}*/}
-                {/*  </AvInput>*/}
-                {/*  <AvFeedback>This field is required.</AvFeedback>*/}
-                {/*</AvGroup>*/}
                 <Button tag={Link} id="cancel-save" to="/entity/advertisement" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />
                   &nbsp;

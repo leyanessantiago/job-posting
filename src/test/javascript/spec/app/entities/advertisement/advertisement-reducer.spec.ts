@@ -31,11 +31,13 @@ describe('Entities reducer tests', () => {
     loading: false,
     errorMessage: null,
     entities: [] as ReadonlyArray<IAdvertisement>,
-    activeEntities: [] as ReadonlyArray<IAdvertisement>,
+    activeEntitiesCount: 0,
     entity: defaultValue,
     totalItems: 0,
     updating: false,
-    updateSuccess: false
+    updateSuccess: false,
+    allActiveEntities: [] as ReadonlyArray<IAdvertisement>,
+    entitiesByProfession: [] as ReadonlyArray<{ professionName: string; adsCount: number }>
   };
 
   function testInitialState(state) {

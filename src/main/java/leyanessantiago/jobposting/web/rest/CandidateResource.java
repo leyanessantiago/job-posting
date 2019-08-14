@@ -1,8 +1,8 @@
 package leyanessantiago.jobposting.web.rest;
 
-import leyanessantiago.jobposting.domain.Advertisement;
-import leyanessantiago.jobposting.domain.Candidate;
+import leyanessantiago.jobposting.domain.*;
 import leyanessantiago.jobposting.repository.CandidateRepository;
+import leyanessantiago.jobposting.repository.ProfessionRepository;
 import leyanessantiago.jobposting.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +22,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST controller for managing {@link leyanessantiago.jobposting.domain.Candidate}.
@@ -42,8 +43,11 @@ public class CandidateResource {
 
     private final CandidateRepository candidateRepository;
 
-    public CandidateResource(CandidateRepository candidateRepository) {
+    private final ProfessionRepository professionRepository;
+
+    public CandidateResource(CandidateRepository candidateRepository, ProfessionRepository professionRepository) {
         this.candidateRepository = candidateRepository;
+        this.professionRepository = professionRepository;
     }
 
     /**
@@ -60,20 +64,22 @@ public class CandidateResource {
             throw new BadRequestAlertException("A new candidate cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Candidate result;
-        Optional<Candidate> existentCandidate = candidateRepository.findByEmailWithEagerRelationships(candidate.getEmail());
+        Candidate existentCandidate = candidateRepository.findByEmailWithEagerRelationships(candidate.getEmail());
         if (existentCandidate != null) {
-            Candidate candidateToSave = existentCandidate.get();
-            Boolean isChangingNames = candidate.getFirstName() != candidateToSave.getFirstName()
-                || candidate.getLastName() != candidateToSave.getLastName();
+            Candidate candidateToSave = existentCandidate;
+            Boolean isChangingNames = !candidate.getFirstName().equals(candidateToSave.getFirstName())
+                || !candidate.getLastName().equals(candidateToSave.getLastName());
             if (isChangingNames) {
                 throw new BadRequestAlertException("A candidate with the same email already exists, If you have any question please contact with the admin", "Candidate", "email");
             }
             Advertisement advertisement = candidate.getAdvertisements().stream().findFirst().get();
-            Boolean hasThisAdvertisement = existentCandidate.get().getAdvertisements().stream().anyMatch(ads -> ads.getId() == advertisement.getId());
+            Boolean hasThisAdvertisement = existentCandidate.getAdvertisements().stream().anyMatch(ads -> ads.getId() == advertisement.getId());
             if (hasThisAdvertisement) {
                 throw new BadRequestAlertException("You can only apply once for each advertisement", "Job Application", "jobApplication");
             }
-            candidateToSave.setAdvertisements(candidate.getAdvertisements());
+            Set<Advertisement> adsToSave = candidateToSave.getAdvertisements();
+            adsToSave.addAll(candidate.getAdvertisements());
+            candidateToSave.setAdvertisements(adsToSave);
             result = candidateRepository.save(candidateToSave);
         } else {
             result = candidateRepository.save(candidate);
@@ -123,6 +129,26 @@ public class CandidateResource {
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /candidates/by-profession} : get the candidates count by profession.
+
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the candidates count by profession in body.
+     */
+    @GetMapping("/candidates/by-profession")
+    public ResponseEntity<List<CandidatesByProfession>> getCandidatesByProfession() {
+        log.debug("REST request to get Candidates count by profession");
+        List<Object[]> candidates = candidateRepository.countByProfession();
+        List<Profession> professions = professionRepository.findAll();
+        List<CandidatesByProfession> candidatesByProfession = new ArrayList<>();
+        for (Object[] ads: candidates) {
+            CandidatesByProfession item = new CandidatesByProfession();
+            item.setProfessionName(professions.stream().filter(p -> p.getId() == ads[0]).findFirst().get().getName());
+            item.setCandidatesCount(Integer.parseInt(ads[1].toString()));
+            candidatesByProfession.add(item);
+        }
+        return ResponseEntity.ok().body(candidatesByProfession);
     }
 
     /**

@@ -121,12 +121,6 @@ export class CandidateUpdate extends React.Component<ICandidateUpdateProps, ICan
                     }}
                   />
                 </AvGroup>
-                <Button tag={Link} id="cancel-save" to="/entity/candidate" replace color="info">
-                  <FontAwesomeIcon icon="arrow-left" />
-                  &nbsp;
-                  <span className="d-none d-md-inline">Back</span>
-                </Button>
-                &nbsp;
                 <Button color="primary" id="save-entity" type="submit" disabled={updating}>
                   <FontAwesomeIcon icon="save" />
                   &nbsp; Save

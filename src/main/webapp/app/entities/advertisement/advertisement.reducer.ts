@@ -1,3 +1,4 @@
+// tslint:disable:ter-arrow-body-style
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
@@ -13,7 +14,8 @@ export const ACTION_TYPES = {
   UPDATE_ADVERTISEMENT: 'advertisement/UPDATE_ADVERTISEMENT',
   DELETE_ADVERTISEMENT: 'advertisement/DELETE_ADVERTISEMENT',
   RESET: 'advertisement/RESET',
-  FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST: 'advertisement/FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST'
+  FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST: 'advertisement/FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST',
+  FETCH_ADVERTISEMENT_BY_PROFESSION: 'advertisement/FETCH_ADVERTISEMENT_BY_PROFESSION'
 };
 
 const initialState = {
@@ -25,7 +27,8 @@ const initialState = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
-  allActiveEntities: [] as ReadonlyArray<IAdvertisement>
+  allActiveEntities: [] as ReadonlyArray<IAdvertisement>,
+  entitiesByProfession: [] as ReadonlyArray<{ professionName: string; adsCount: number }>
 };
 
 export type AdvertisementState = Readonly<typeof initialState>;
@@ -35,8 +38,9 @@ export type AdvertisementState = Readonly<typeof initialState>;
 export default (state: AdvertisementState = initialState, action): AdvertisementState => {
   switch (action.type) {
     case REQUEST(ACTION_TYPES.FETCH_ADVERTISEMENT_LIST):
-    case REQUEST(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
     case REQUEST(ACTION_TYPES.FETCH_ADVERTISEMENT):
+    case REQUEST(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
+    case REQUEST(ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION):
       return {
         ...state,
         errorMessage: null,
@@ -53,8 +57,9 @@ export default (state: AdvertisementState = initialState, action): Advertisement
         updating: true
       };
     case FAILURE(ACTION_TYPES.FETCH_ADVERTISEMENT_LIST):
-    case FAILURE(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
     case FAILURE(ACTION_TYPES.FETCH_ADVERTISEMENT):
+    case FAILURE(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
+    case FAILURE(ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION):
     case FAILURE(ACTION_TYPES.CREATE_ADVERTISEMENT):
     case FAILURE(ACTION_TYPES.UPDATE_ADVERTISEMENT):
     case FAILURE(ACTION_TYPES.DELETE_ADVERTISEMENT):
@@ -73,17 +78,23 @@ export default (state: AdvertisementState = initialState, action): Advertisement
         totalItems: parseInt(action.payload.headers['x-total-count'], 10),
         activeEntitiesCount: parseInt(action.payload.headers['x-active-count'], 10)
       };
+    case SUCCESS(ACTION_TYPES.FETCH_ADVERTISEMENT):
+      return {
+        ...state,
+        loading: false,
+        entity: action.payload.data
+      };
     case SUCCESS(ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST):
       return {
         ...state,
         loading: false,
         allActiveEntities: action.payload.data
       };
-    case SUCCESS(ACTION_TYPES.FETCH_ADVERTISEMENT):
+    case SUCCESS(ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION):
       return {
         ...state,
         loading: false,
-        entity: action.payload.data
+        entitiesByProfession: action.payload.data
       };
     case SUCCESS(ACTION_TYPES.CREATE_ADVERTISEMENT):
     case SUCCESS(ACTION_TYPES.UPDATE_ADVERTISEMENT):
@@ -121,11 +132,17 @@ export const getEntities: ICrudGetAllAction<IAdvertisement> = (page, size, sort)
   };
 };
 
-// tslint:disable-next-line:ter-arrow-body-style
 export const getActiveEntities: ICrudGetAllAction<IAdvertisement> = () => {
   return {
     type: ACTION_TYPES.FETCH_ALL_ACTIVE_ADVERTISEMENT_LIST,
     payload: axios.get<IAdvertisement>(`${apiUrl}/active?cacheBuster=${new Date().getTime()}`)
+  };
+};
+
+export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION,
+    payload: axios.get<IAdvertisement>(`${apiUrl}/by-profession?cacheBuster=${new Date().getTime()}`)
   };
 };
 

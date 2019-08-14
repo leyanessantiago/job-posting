@@ -8,8 +8,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink as Link } from 'react-router-dom';
 import LoadingBar from 'react-redux-loading-bar';
 
-import { Home, Brand } from './header-components';
+import { Home, Brand, Advertisements } from './header-components';
 import { AdminMenu, EntitiesMenu, AccountMenu } from '../menus';
+import MenuItem from 'app/shared/layout/menus/menu-item';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -22,12 +23,7 @@ export interface IHeaderProps {
 const Header = (props: IHeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const renderDevRibbon = () =>
-    props.isInProduction === false ? (
-      <div className="ribbon dev">
-        <a href="">Development</a>
-      </div>
-    ) : null;
+  const { isAdmin, isAuthenticated, isSwaggerEnabled, isInProduction } = props;
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -35,7 +31,6 @@ const Header = (props: IHeaderProps) => {
 
   return (
     <div id="app-header">
-      {renderDevRibbon()}
       <LoadingBar className="loading-bar" />
       <Navbar dark expand="sm" fixed="top" className="bg-primary">
         <NavbarToggler aria-label="Menu" onClick={toggleMenu} />
@@ -43,9 +38,10 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
-            {props.isAuthenticated && <EntitiesMenu />}
-            {props.isAuthenticated && props.isAdmin && <AdminMenu showSwagger={props.isSwaggerEnabled} />}
-            <AccountMenu isAuthenticated={props.isAuthenticated} />
+            {isAuthenticated && !isAdmin && <Advertisements />}
+            {isAuthenticated && isAdmin && <EntitiesMenu isAdmin={isAdmin} />}
+            {isAuthenticated && isAdmin && <AdminMenu showSwagger={isSwaggerEnabled} />}
+            <AccountMenu isAuthenticated={isAuthenticated} />
           </Nav>
         </Collapse>
       </Navbar>

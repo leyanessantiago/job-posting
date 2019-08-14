@@ -3,6 +3,7 @@ package leyanessantiago.jobposting.web.rest;
 import leyanessantiago.jobposting.JobpostingApp;
 import leyanessantiago.jobposting.domain.Candidate;
 import leyanessantiago.jobposting.repository.CandidateRepository;
+import leyanessantiago.jobposting.repository.ProfessionRepository;
 import leyanessantiago.jobposting.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -50,8 +51,14 @@ public class CandidateResourceIT {
     @Autowired
     private CandidateRepository candidateRepository;
 
+    @Autowired
+    private ProfessionRepository professionRepository;
+
     @Mock
     private CandidateRepository candidateRepositoryMock;
+
+    @Mock
+    private ProfessionRepository professionRepositoryMock;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -75,7 +82,7 @@ public class CandidateResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CandidateResource candidateResource = new CandidateResource(candidateRepository);
+        final CandidateResource candidateResource = new CandidateResource(candidateRepository, professionRepository);
         this.restCandidateMockMvc = MockMvcBuilders.standaloneSetup(candidateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -225,10 +232,10 @@ public class CandidateResourceIT {
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())));
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public void getAllCandidatesWithEagerRelationshipsIsEnabled() throws Exception {
-        CandidateResource candidateResource = new CandidateResource(candidateRepositoryMock);
+        CandidateResource candidateResource = new CandidateResource(candidateRepositoryMock, professionRepositoryMock);
         when(candidateRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restCandidateMockMvc = MockMvcBuilders.standaloneSetup(candidateResource)
@@ -245,7 +252,7 @@ public class CandidateResourceIT {
 
     @SuppressWarnings({"unchecked"})
     public void getAllCandidatesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        CandidateResource candidateResource = new CandidateResource(candidateRepositoryMock);
+        CandidateResource candidateResource = new CandidateResource(candidateRepositoryMock, professionRepositoryMock);
             when(candidateRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restCandidateMockMvc = MockMvcBuilders.standaloneSetup(candidateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

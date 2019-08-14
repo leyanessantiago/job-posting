@@ -1,4 +1,4 @@
-.advertisement-active-column {
+.advertisement_active-column {
   .form-check-input {
     position: inherit;
     margin: unset;
@@ -7,6 +7,38 @@
   }
 }
 
-.advertisement-description-column {
+.advertisement_description-column {
   max-width: 250px;
+}
+
+.advertisement-details_wrapper {
+  display: flex;
+}
+
+.advertisement-details_aside-sticky {
+  flex: 1 0 340px;
+  margin-right: 60px;
+}
+
+.advertisement-details_aside {
+  position: fixed;
+  top: 30px;
+}
+
+.advertisement-details_description {
+  width: 100%;
+  min-height: 450px;
+}
+
+.advertisement-details_aside-list {
+  margin: 20px 0;
+  list-style: none;
+  padding: 0;
+}
+
+.advertisement-details-item {
+  padding: 10px 0;
+  color: #39424e;
+  font-size: 14px;
+  border-bottom: 1px solid #e7eeef;
 }

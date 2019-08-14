@@ -26,4 +26,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query("select count(advertisement) from Advertisement advertisement where advertisement.active = true and advertisement.user.login = ?#{principal.username}")
     Long countActiveByUserIsCurrentUser();
+
+    @Query("select advertisement.profession.id, count(advertisement) from Advertisement advertisement group by (advertisement.profession.id)")
+    List<Object[]> countByProfession();
 }

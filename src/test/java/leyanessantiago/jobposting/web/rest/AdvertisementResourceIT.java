@@ -5,6 +5,7 @@ import leyanessantiago.jobposting.domain.Advertisement;
 import leyanessantiago.jobposting.domain.Profession;
 import leyanessantiago.jobposting.domain.User;
 import leyanessantiago.jobposting.repository.AdvertisementRepository;
+import leyanessantiago.jobposting.repository.ProfessionRepository;
 import leyanessantiago.jobposting.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,9 @@ public class AdvertisementResourceIT {
     private AdvertisementRepository advertisementRepository;
 
     @Autowired
+    private ProfessionRepository professionRepository;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -69,7 +73,7 @@ public class AdvertisementResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AdvertisementResource advertisementResource = new AdvertisementResource(advertisementRepository);
+        final AdvertisementResource advertisementResource = new AdvertisementResource(advertisementRepository, professionRepository);
         this.restAdvertisementMockMvc = MockMvcBuilders.standaloneSetup(advertisementResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -231,7 +235,7 @@ public class AdvertisementResourceIT {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
-    
+
     @Test
     @Transactional
     public void getAdvertisement() throws Exception {

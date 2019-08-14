@@ -1,7 +1,10 @@
 package leyanessantiago.jobposting.web.rest;
 
+import leyanessantiago.jobposting.domain.AdvertisementsByProfession;
 import leyanessantiago.jobposting.domain.Advertisement;
+import leyanessantiago.jobposting.domain.Profession;
 import leyanessantiago.jobposting.repository.AdvertisementRepository;
+import leyanessantiago.jobposting.repository.ProfessionRepository;
 import leyanessantiago.jobposting.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -13,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +44,11 @@ public class AdvertisementResource {
 
     private final AdvertisementRepository advertisementRepository;
 
-    public AdvertisementResource(AdvertisementRepository advertisementRepository) {
+    private final ProfessionRepository professionRepository;
+
+    public AdvertisementResource(AdvertisementRepository advertisementRepository, ProfessionRepository professionRepository) {
         this.advertisementRepository = advertisementRepository;
+        this.professionRepository = professionRepository;
     }
 
     /**
@@ -80,9 +86,12 @@ public class AdvertisementResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (advertisement.isActive()) {
-            Long activeCount = advertisementRepository.countActiveByUserIsCurrentUser();
-            if (activeCount >= 10) {
-                throw new BadRequestAlertException("You can only have 10 active advertisements", "Advertisement", "active");
+            Optional<Advertisement> currentAdvertisement = advertisementRepository.findById(advertisement.getId());
+            if (!currentAdvertisement.get().isActive()) {
+                Long activeCount = advertisementRepository.countActiveByUserIsCurrentUser();
+                if (activeCount >= 10) {
+                    throw new BadRequestAlertException("You can only have 10 active advertisements", "Advertisement", "active");
+                }
             }
         }
         Advertisement result = advertisementRepository.save(advertisement);
@@ -119,6 +128,26 @@ public class AdvertisementResource {
         log.debug("REST request to get the active Advertisements");
         List<Advertisement> activeAdvertisements = advertisementRepository.findByActiveIsActive();
         return ResponseEntity.ok().body(activeAdvertisements);
+    }
+
+    /**
+     * {@code GET  /advertisements/by-profession} : get the advertisements count by profession.
+
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the advertisements count by profession in body.
+     */
+    @GetMapping("/advertisements/by-profession")
+    public ResponseEntity<List<AdvertisementsByProfession>> getAdvertisementsByProfession() {
+        log.debug("REST request to get Advertisements count by profession");
+        List<Object[]> advertisements = advertisementRepository.countByProfession();
+        List<Profession> professions = professionRepository.findAll();
+        List<AdvertisementsByProfession> advertisementsByProfession = new ArrayList<>();
+        for (Object[] ads: advertisements) {
+            AdvertisementsByProfession item = new AdvertisementsByProfession();
+            item.setProfessionName(professions.stream().filter(p -> p.getId() == ads[0]).findFirst().get().getName());
+            item.setAdsCount(Integer.parseInt(ads[1].toString()));
+            advertisementsByProfession.add(item);
+        }
+        return ResponseEntity.ok().body(advertisementsByProfession);
     }
 
     /**

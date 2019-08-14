@@ -27,6 +27,9 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     Optional<Candidate> findOneWithEagerRelationships(@Param("id") Long id);
 
     @Query("select candidate from Candidate candidate left join fetch candidate.advertisements where candidate.email =:email")
-    Optional<Candidate> findByEmailWithEagerRelationships(@Param("email") String email);
+    Candidate findByEmailWithEagerRelationships(@Param("email") String email);
+
+    @Query("select advertisement.profession.id, count(jobApplication.candidate.id) from JobApplication jobApplication, Advertisement advertisement WHERE jobApplication.advertisement.id = advertisement.id group by (advertisement.profession.id)")
+    List<Object[]> countByProfession();
 
 }

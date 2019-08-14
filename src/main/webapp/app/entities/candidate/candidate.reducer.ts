@@ -1,3 +1,4 @@
+/* tslint:disable:ter-arrow-body-style */
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
@@ -5,6 +6,7 @@ import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { ICandidate, defaultValue } from 'app/shared/model/candidate.model';
+import { IAdvertisement } from 'app/shared/model/advertisement.model';
 
 export const ACTION_TYPES = {
   FETCH_CANDIDATE_LIST: 'candidate/FETCH_CANDIDATE_LIST',
@@ -12,7 +14,8 @@ export const ACTION_TYPES = {
   CREATE_CANDIDATE: 'candidate/CREATE_CANDIDATE',
   UPDATE_CANDIDATE: 'candidate/UPDATE_CANDIDATE',
   DELETE_CANDIDATE: 'candidate/DELETE_CANDIDATE',
-  RESET: 'candidate/RESET'
+  RESET: 'candidate/RESET',
+  FETCH_CANDIDATE_BY_PROFESSION: 'advertisement/FETCH_CANDIDATE_BY_PROFESSION'
 };
 
 const initialState = {
@@ -106,6 +109,13 @@ export const getEntities: ICrudGetAllAction<ICandidate> = (page, size, sort) => 
   return {
     type: ACTION_TYPES.FETCH_CANDIDATE_LIST,
     payload: axios.get<ICandidate>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`)
+  };
+};
+
+export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => {
+  return {
+    type: ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION,
+    payload: axios.get<IAdvertisement>(`${apiUrl}/by-profession?cacheBuster=${new Date().getTime()}`)
   };
 };
 
