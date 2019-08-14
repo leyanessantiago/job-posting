@@ -75,6 +75,15 @@ export const SettingsPage = (props: IUserSettingsProps) => {
               }}
               value={props.account.email}
             />
+            {/* Company Name */}
+            <AvField
+              className="form-control"
+              name="companyName"
+              label="Company Name"
+              id="companyName"
+              placeholder="Your company name"
+              value={props.account.companyName}
+            />
             <Button color="primary" type="submit">
               Save
             </Button>
