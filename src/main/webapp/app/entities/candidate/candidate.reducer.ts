@@ -25,7 +25,8 @@ const initialState = {
   entity: defaultValue,
   updating: false,
   totalItems: 0,
-  updateSuccess: false
+  updateSuccess: false,
+  entitiesByProfession: [] as ReadonlyArray<{ professionName: string; candidatesCount: number }>
 };
 
 export type CandidateState = Readonly<typeof initialState>;
@@ -35,6 +36,7 @@ export type CandidateState = Readonly<typeof initialState>;
 export default (state: CandidateState = initialState, action): CandidateState => {
   switch (action.type) {
     case REQUEST(ACTION_TYPES.FETCH_CANDIDATE_LIST):
+    case REQUEST(ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION):
     case REQUEST(ACTION_TYPES.FETCH_CANDIDATE):
       return {
         ...state,
@@ -52,6 +54,7 @@ export default (state: CandidateState = initialState, action): CandidateState =>
         updating: true
       };
     case FAILURE(ACTION_TYPES.FETCH_CANDIDATE_LIST):
+    case FAILURE(ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION):
     case FAILURE(ACTION_TYPES.FETCH_CANDIDATE):
     case FAILURE(ACTION_TYPES.CREATE_CANDIDATE):
     case FAILURE(ACTION_TYPES.UPDATE_CANDIDATE):
@@ -69,6 +72,12 @@ export default (state: CandidateState = initialState, action): CandidateState =>
         loading: false,
         entities: action.payload.data,
         totalItems: parseInt(action.payload.headers['x-total-count'], 10)
+      };
+    case SUCCESS(ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION):
+      return {
+        ...state,
+        loading: false,
+        entitiesByProfession: action.payload.data
       };
     case SUCCESS(ACTION_TYPES.FETCH_CANDIDATE):
       return {

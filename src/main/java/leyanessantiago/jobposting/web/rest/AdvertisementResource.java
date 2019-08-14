@@ -135,19 +135,19 @@ public class AdvertisementResource {
 
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the advertisements count by profession in body.
      */
-    @GetMapping("/advertisements/by-profession")
-    public ResponseEntity<List<AdvertisementsByProfession>> getAdvertisementsByProfession() {
+    @GetMapping("/advertisements/active/by-profession")
+    public ResponseEntity<List<AdvertisementsByProfession>> getActiveAdvertisementsByProfession() {
         log.debug("REST request to get Advertisements count by profession");
-        List<Object[]> advertisements = advertisementRepository.countByProfession();
+        List<Object[]> advertisements = advertisementRepository.countActiveByProfession();
         List<Profession> professions = professionRepository.findAll();
-        List<AdvertisementsByProfession> advertisementsByProfession = new ArrayList<>();
+        List<AdvertisementsByProfession> activeAdvertisementsByProfession = new ArrayList<>();
         for (Object[] ads: advertisements) {
             AdvertisementsByProfession item = new AdvertisementsByProfession();
             item.setProfessionName(professions.stream().filter(p -> p.getId() == ads[0]).findFirst().get().getName());
             item.setAdsCount(Integer.parseInt(ads[1].toString()));
-            advertisementsByProfession.add(item);
+            activeAdvertisementsByProfession.add(item);
         }
-        return ResponseEntity.ok().body(advertisementsByProfession);
+        return ResponseEntity.ok().body(activeAdvertisementsByProfession);
     }
 
     /**

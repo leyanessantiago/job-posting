@@ -4,9 +4,9 @@ import React, { Fragment } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import { Alert, Card, CardBody, CardTitle, CardSubtitle, CardText, CardDeck, Button } from 'reactstrap';
+import { Card, CardBody, CardTitle, CardSubtitle, CardText, CardDeck, Button } from 'reactstrap';
+import PieChart from 'react-minimal-pie-chart';
 
-import { IRootState } from 'app/shared/reducers';
 import { IAdvertisement } from 'app/shared/model/advertisement.model';
 import { uniqueId } from 'app/shared/util/unique-id';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,12 +16,22 @@ import {
 } from 'app/entities/advertisement/advertisement.reducer';
 import { getEntitiesByProfession as getCandidatesByProfession } from 'app/entities/candidate/candidate.reducer';
 
+const colors = [
+  'rgba(255, 99, 132, 0.8)',
+  'rgba(54, 162, 235, 0.8)',
+  'rgba(255, 206, 86, 0.8)',
+  'rgba(75, 192, 192, 0.8)',
+  'rgba(153, 102, 255, 0.8)',
+  'rgba(255, 159, 64, 0.8)'
+];
+
 export interface IHomeProp extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
 export class Home extends React.Component<IHomeProp> {
   componentDidMount() {
     if (this.props.isAuthenticated) {
       this.props.getAdvertisementsByProfession();
+      this.props.getCandidatesByProfession();
     } else {
       this.props.getActiveAdvertisements();
     }
@@ -73,15 +83,26 @@ export class Home extends React.Component<IHomeProp> {
   };
 
   render() {
-    const { account, advertisementsByProfession } = this.props;
+    const { account, advertisementsByProfession, candidatesByProfession } = this.props;
 
     if (account && account.login) {
+      const advertisementsByProfessionData = advertisementsByProfession.map((ad, index) => {
+        return { title: ad.professionName, value: ad.adsCount, color: colors[index] };
+      });
+      const candidatesByProfessionData = candidatesByProfession.map((candidate, index) => {
+        return { title: candidate.professionName, value: candidate.candidatesCount, color: colors[index] };
+      });
+
       return (
-        <div>
-          <Button onClick={() => this.props.getCandidatesByProfession()} color="info" className="float-right">
-            Apply
-          </Button>
-          {/*<Alert color="success">You are logged in as user {account.login}.</Alert>*/}
+        <div className="home-charts">
+          <div className="home-chart_wrapper">
+            <h3>Active Advertisements By Profession</h3>
+            <PieChart label className="ads-chart" data={advertisementsByProfessionData} />
+          </div>
+          <div className="home-chart_wrapper">
+            <h3>Candidates By Profession</h3>
+            <PieChart label className="ads-chart" data={candidatesByProfessionData} />
+          </div>
         </div>
       );
     }
@@ -94,7 +115,8 @@ const mapStateToProps = storeState => ({
   account: storeState.authentication.account,
   isAuthenticated: storeState.authentication.isAuthenticated,
   activeAdvertisementList: storeState.advertisement.allActiveEntities,
-  advertisementsByProfession: storeState.advertisement.entitiesByProfession
+  advertisementsByProfession: storeState.advertisement.entitiesByProfession,
+  candidatesByProfession: storeState.candidate.entitiesByProfession
 });
 
 const mapDispatchToProps = {

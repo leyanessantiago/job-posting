@@ -142,7 +142,7 @@ export const getActiveEntities: ICrudGetAllAction<IAdvertisement> = () => {
 export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => {
   return {
     type: ACTION_TYPES.FETCH_ADVERTISEMENT_BY_PROFESSION,
-    payload: axios.get<IAdvertisement>(`${apiUrl}/by-profession?cacheBuster=${new Date().getTime()}`)
+    payload: axios.get<IAdvertisement>(`${apiUrl}/active/by-profession?cacheBuster=${new Date().getTime()}`)
   };
 };
 
