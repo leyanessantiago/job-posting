@@ -152,6 +152,26 @@ public class CandidateResource {
     }
 
     /**
+     * {@code GET  /candidates/by-profession/by-user} : get the candidates count by profession by current user.
+
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the candidates count by profession by current user in body.
+     */
+    @GetMapping("/candidates/by-profession/by-user")
+    public ResponseEntity<List<CandidatesByProfession>> getCandidatesByProfessionByCurrentUser() {
+        log.debug("REST request to get Candidates count by profession by current user");
+        List<Object[]> candidates = candidateRepository.countByProfessionByUserIsCurrentUser();
+        List<Profession> professions = professionRepository.findAll();
+        List<CandidatesByProfession> candidatesByProfession = new ArrayList<>();
+        for (Object[] ads: candidates) {
+            CandidatesByProfession item = new CandidatesByProfession();
+            item.setProfessionName(professions.stream().filter(p -> p.getId() == ads[0]).findFirst().get().getName());
+            item.setCandidatesCount(Integer.parseInt(ads[1].toString()));
+            candidatesByProfession.add(item);
+        }
+        return ResponseEntity.ok().body(candidatesByProfession);
+    }
+
+    /**
      * {@code GET  /candidates/:id} : get the "id" candidate.
      *
      * @param id the id of the candidate to retrieve.

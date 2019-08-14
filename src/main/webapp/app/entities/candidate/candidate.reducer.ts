@@ -1,4 +1,3 @@
-/* tslint:disable:ter-arrow-body-style */
 import axios from 'axios';
 import { ICrudGetAction, ICrudGetAllAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipster';
 
@@ -121,12 +120,15 @@ export const getEntities: ICrudGetAllAction<ICandidate> = (page, size, sort) => 
   };
 };
 
-export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => {
-  return {
-    type: ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION,
-    payload: axios.get<IAdvertisement>(`${apiUrl}/by-profession?cacheBuster=${new Date().getTime()}`)
-  };
-};
+export const getEntitiesByProfession: ICrudGetAllAction<IAdvertisement> = () => ({
+  type: ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION,
+  payload: axios.get<IAdvertisement>(`${apiUrl}/by-profession?cacheBuster=${new Date().getTime()}`)
+});
+
+export const getEntitiesByProfessionByCurrentUser: ICrudGetAllAction<IAdvertisement> = () => ({
+  type: ACTION_TYPES.FETCH_CANDIDATE_BY_PROFESSION,
+  payload: axios.get<IAdvertisement>(`${apiUrl}/by-profession/by-user?cacheBuster=${new Date().getTime()}`)
+});
 
 export const getEntity: ICrudGetAction<ICandidate> = id => {
   const requestUrl = `${apiUrl}/${id}`;

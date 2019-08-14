@@ -20,7 +20,7 @@ export class AdvertisementDetail extends React.Component<IAdvertisementDetailPro
     if (user && user.companyName) {
       return (
         <li className="advertisement-details-item">
-          <FontAwesomeIcon icon="briefcase" fixedWidth /> {user.companyName}
+          <FontAwesomeIcon icon="building" fixedWidth /> {user.companyName}
         </li>
       );
     }

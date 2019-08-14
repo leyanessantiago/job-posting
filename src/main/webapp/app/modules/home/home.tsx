@@ -12,9 +12,13 @@ import { uniqueId } from 'app/shared/util/unique-id';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   getActiveEntities as getActiveAdvertisements,
-  getEntitiesByProfession as getAdvertisementsByProfession
+  getEntitiesByProfession as getAdvertisementsByProfession,
+  getEntitiesByProfessionByCurrentUser as getAdvertisementsByProfessionByCurrentUser
 } from 'app/entities/advertisement/advertisement.reducer';
-import { getEntitiesByProfession as getCandidatesByProfession } from 'app/entities/candidate/candidate.reducer';
+import {
+  getEntitiesByProfession as getCandidatesByProfession,
+  getEntitiesByProfessionByCurrentUser as getCandidatesByProfessionByCurrentUser
+} from 'app/entities/candidate/candidate.reducer';
 
 const colors = [
   'rgba(255, 99, 132, 0.8)',
@@ -30,8 +34,13 @@ export interface IHomeProp extends StateProps, DispatchProps, RouteComponentProp
 export class Home extends React.Component<IHomeProp> {
   componentDidMount() {
     if (this.props.isAuthenticated) {
-      this.props.getAdvertisementsByProfession();
-      this.props.getCandidatesByProfession();
+      if (this.props.account.authorities.some(auth => auth === 'ROLE_ADMIN')) {
+        this.props.getAdvertisementsByProfession();
+        this.props.getCandidatesByProfession();
+      } else {
+        this.props.getAdvertisementsByProfessionByCurrentUser();
+        this.props.getCandidatesByProfessionByCurrentUser();
+      }
     } else {
       this.props.getActiveAdvertisements();
     }
@@ -86,12 +95,16 @@ export class Home extends React.Component<IHomeProp> {
     const { account, advertisementsByProfession, candidatesByProfession } = this.props;
 
     if (account && account.login) {
-      const advertisementsByProfessionData = advertisementsByProfession.map((ad, index) => {
-        return { title: ad.professionName, value: ad.adsCount, color: colors[index] };
-      });
-      const candidatesByProfessionData = candidatesByProfession.map((candidate, index) => {
-        return { title: candidate.professionName, value: candidate.candidatesCount, color: colors[index] };
-      });
+      const advertisementsByProfessionData = advertisementsByProfession.map((ad, index) => ({
+        title: ad.professionName,
+        value: ad.adsCount,
+        color: colors[index]
+      }));
+      const candidatesByProfessionData = candidatesByProfession.map((candidate, index) => ({
+        title: candidate.professionName,
+        value: candidate.candidatesCount,
+        color: colors[index]
+      }));
 
       return (
         <div className="home-charts">
@@ -122,7 +135,9 @@ const mapStateToProps = storeState => ({
 const mapDispatchToProps = {
   getActiveAdvertisements,
   getAdvertisementsByProfession,
-  getCandidatesByProfession
+  getCandidatesByProfession,
+  getAdvertisementsByProfessionByCurrentUser,
+  getCandidatesByProfessionByCurrentUser
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
