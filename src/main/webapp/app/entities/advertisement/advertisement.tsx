@@ -100,8 +100,8 @@ export class Advertisement extends React.Component<IAdvertisementProps, IAdverti
                       </Button>
                     </td>
                     <td>{advertisement.title}</td>
-                    <td className="hand advertisement-description-column">{advertisement.description}</td>
-                    <td className="advertisement-active-column">
+                    <td className="advertisement_description-column">{advertisement.description}</td>
+                    <td className="advertisement_active-column">
                       <Input
                         type="checkbox"
                         checked={advertisement.active}

@@ -10,18 +10,22 @@ import { IRootState } from 'app/shared/reducers';
 import { IAdvertisement } from 'app/shared/model/advertisement.model';
 import { uniqueId } from 'app/shared/util/unique-id';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getActiveEntities as getActiveAdvertisements } from 'app/entities/advertisement/advertisement.reducer';
+import {
+  getActiveEntities as getActiveAdvertisements,
+  getEntitiesByProfession as getAdvertisementsByProfession
+} from 'app/entities/advertisement/advertisement.reducer';
+import { getEntitiesByProfession as getCandidatesByProfession } from 'app/entities/candidate/candidate.reducer';
 
 export interface IHomeProp extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
 export class Home extends React.Component<IHomeProp> {
   componentDidMount() {
-    this.getActiveAdvertisements();
+    if (this.props.isAuthenticated) {
+      this.props.getAdvertisementsByProfession();
+    } else {
+      this.props.getActiveAdvertisements();
+    }
   }
-
-  getActiveAdvertisements = () => {
-    this.props.getActiveAdvertisements();
-  };
 
   renderCompany(companyName: string) {
     if (companyName) {
@@ -49,7 +53,7 @@ export class Home extends React.Component<IHomeProp> {
     const { activeAdvertisementList, match } = this.props;
     return activeAdvertisementList.map((ads: IAdvertisement) => {
       return (
-        <Link key={uniqueId('home-advertisement')} to={`${match.url}entity/advertisement/${ads.id}`} className="ads-card-wrapper">
+        <Link key={uniqueId('home-advertisement')} to={`${match.url}advertisement/${ads.id}`} className="ads-card-wrapper">
           <Card body outline color="info" className="ads-card">
             <CardBody className="ads-card-body">
               <CardTitle className="ads-title">{ads.title}</CardTitle>
@@ -58,7 +62,7 @@ export class Home extends React.Component<IHomeProp> {
                 {this.renderProfession(ads.profession.name)}
               </CardSubtitle>
               <CardText className="ads-description">{ads.description}</CardText>
-              <Button tag={Link} to={`${match.url}advertisement/${ads.id}/apply`} color="primary" className="float-right">
+              <Button tag={Link} to={`${match.url}advertisement/${ads.id}/apply`} color="info" className="float-right">
                 Apply
               </Button>
             </CardBody>
@@ -69,12 +73,15 @@ export class Home extends React.Component<IHomeProp> {
   };
 
   render() {
-    const { account } = this.props;
+    const { account, advertisementsByProfession } = this.props;
 
     if (account && account.login) {
       return (
         <div>
-          <Alert color="success">You are logged in as user {account.login}.</Alert>
+          <Button onClick={() => this.props.getCandidatesByProfession()} color="info" className="float-right">
+            Apply
+          </Button>
+          {/*<Alert color="success">You are logged in as user {account.login}.</Alert>*/}
         </div>
       );
     }
@@ -86,11 +93,14 @@ export class Home extends React.Component<IHomeProp> {
 const mapStateToProps = storeState => ({
   account: storeState.authentication.account,
   isAuthenticated: storeState.authentication.isAuthenticated,
-  activeAdvertisementList: storeState.advertisement.allActiveEntities
+  activeAdvertisementList: storeState.advertisement.allActiveEntities,
+  advertisementsByProfession: storeState.advertisement.entitiesByProfession
 });
 
 const mapDispatchToProps = {
-  getActiveAdvertisements
+  getActiveAdvertisements,
+  getAdvertisementsByProfession,
+  getCandidatesByProfession
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
